@@ -2,20 +2,25 @@ package router
 
 import (
   "net/http"
+
   "github.com/gorilla/mux"
 )
 
-type CsvController interface {
-  PostCsv(w http.ResponseWriter, r *http.Request)
+type PokemonController interface {
+  GetAllPokemon(w http.ResponseWriter, r *http.Request)
+  GetPokemonById(w http.ResponseWriter, r *http.Request)
 }
 
-func Setup(c CsvController) *mux.Router {
+func Setup(c PokemonController) *mux.Router {
   r := mux.NewRouter()
 
   api := r.PathPrefix("/api")
 
-  api.HandleFunc("/csv", c.PostCsv).
-    Methods(http.MethodPost).Name("PostCsv")
+  api.HandleFunc("/pokemon", c.GetAllPokemon).
+    Methods(http.MethodGet).Name("GetAllPokemon")
+
+  api.HandleFunc("/pokemon/{id}", c.GetPokemonById).
+    Methods(http.MethodGet).Name("GetPokemonById")
 
   return r
 }
