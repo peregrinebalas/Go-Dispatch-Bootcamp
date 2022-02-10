@@ -14,12 +14,10 @@ type PokemonController interface {
 func Setup(c PokemonController) *mux.Router {
   r := mux.NewRouter()
 
-  api := r.PathPrefix("/api")
-
-  api.HandleFunc("/pokemon", c.GetAllPokemon).
+  r.HandleFunc("/pokemon", c.GetAllPokemon).
     Methods(http.MethodGet).Name("GetAllPokemon")
 
-  api.HandleFunc("/pokemon/{id}", c.GetPokemonById).
+  r.HandleFunc("/pokemon/{id}", c.GetPokemonById).
     Methods(http.MethodGet).Name("GetPokemonById")
 
   return r

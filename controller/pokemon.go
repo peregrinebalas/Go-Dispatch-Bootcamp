@@ -1,20 +1,20 @@
 package controller
 
 import (
-  // "encoding/json"
-  "errors"
+  "encoding/json"
   "fmt"
   "log"
   "net/http"
   "strconv"
 
+  "github.com/peregrinebalas/go-dispatch-bootcamp/model"
+
   "github.com/gorilla/mux"
 )
 // validate and transform data from request
 
-
 type usecase interface {
-  GetAllPokemon() (*model.Pokemons, error)
+  GetAllPokemon() ([]model.Pokemon, error)
   GetPokemonById(id int) (*model.Pokemon, error)
 }
 
@@ -24,12 +24,12 @@ type pokemonController struct {
 
 func New(uc usecase) *pokemonController {
   return &pokemonController{
-    usercase: uc,
+    usecase: uc,
   }
 }
 
 func (pc *pokemonController) GetAllPokemon(w http.ResponseWriter, r *http.Request) {
-  pokemon, err := pc.usecaseGetAllPokemon()
+  pokemon, err := pc.usecase.GetAllPokemon()
   if err != nil {
     w.WriteHeader(http.StatusInternalServerError)
     fmt.Fprintf(w, "error getting pokemon")
@@ -68,17 +68,8 @@ func (pc *pokemonController) GetPokemonById(w http.ResponseWriter, r *http.Reque
 
   pokemon, err := pc.usecase.GetPokemonById(id)
   if err != nil {
-    switch {
-      case errors.Is(err, "Not Found"), errors.Is(err, "EmptyData")
-        w.WriteHeader(http.StatusNotFound)
-        fmt.Fprint(w, "pokemon not found")
-
-      case errors.Is(err, "Not Init")
-        w.WriteHeader(http.StatusInternalServerError)
-        fmt.Fprintf(w, "data not initialized")
-
-        log.Fatalf("getting pokemon: %v", err)
-    }
+    w.WriteHeader(http.StatusNotFound)
+    fmt.Fprint(w, "pokemon not found")
   }
 
   if pokemon == nil {

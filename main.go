@@ -1,15 +1,14 @@
 package main
 
-import "net/http"
-import "log"
+import(
+  "net/http"
+  "log"
 
-import "github.com/peregrinebalas/go-dispatch-bootcamp/controller"
-import "github.com/peregrinebalas/go-dispatch-bootcamp/router"
-import "github.com/peregrinebalas/go-dispatch-bootcamp/usecase"
-import "github.com/peregrinebalas/go-dispatch-bootcamp/service"
-// import "fmt"
-// import "time"
-// import "html"
+  "github.com/peregrinebalas/go-dispatch-bootcamp/controller"
+  "github.com/peregrinebalas/go-dispatch-bootcamp/router"
+  "github.com/peregrinebalas/go-dispatch-bootcamp/usecase"
+  "github.com/peregrinebalas/go-dispatch-bootcamp/service"
+)
 
 func main() {
   pokemonService := service.New(nil)
@@ -18,15 +17,18 @@ func main() {
   httpRouter := router.Setup(pokemonController)
 
   http.ListenAndServe(":8080", httpRouter)
-  // s := &http.Server{
-  // 	Addr:           ":8080",
-  // 	ReadTimeout:    10 * time.Second,
-  // 	WriteTimeout:   10 * time.Second,
-  // 	MaxHeaderBytes: 1 << 20,
-  // }
-  // http.HandleFunc("/read", func(w http.ResponseWriter, r *http.Request) {
-  //   fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-  // })
-  // http.ListenAndServe(s)
+
   log.Printf("starting server on port :8080")
+
+  f, err := os.Open("pokemon.csv")
+  if err != nil {
+    log.Fatal("Unable to read input file", err)
+  }
+  defer f.Close()
+
+  csvReader := csv.NewReader(f)
+  records, err := csvReader.ReadAll()
+  if err != nil {
+    log.Fatal("Unable to parse file as CSV", err)
+  }
 }

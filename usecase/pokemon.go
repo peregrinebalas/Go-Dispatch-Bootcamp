@@ -1,13 +1,14 @@
 package usecase
 
-import {
+import (
   "fmt"
-  "log"
-}
+
+  "github.com/peregrinebalas/go-dispatch-bootcamp/model"
+)
 
 type PokemonService interface {
-  GetAllPokemon() (model.Pokemon, error)
-  GetPokemonById(id, int) (*model.Pokemon, error))
+  GetAllPokemon() ([]model.Pokemon, error)
+  GetPokemonById(id int) (*model.Pokemon, error)
 }
 
 type PokemonUsecase struct {
@@ -15,10 +16,12 @@ type PokemonUsecase struct {
 }
 
 func New(ps PokemonService) *PokemonUsecase {
-  log.Println("In usecase - NewPokemonUsecase")
+  return &PokemonUsecase{
+    service: ps,
+  }
 }
 
-func (pu *PokemonUsecase) GetAllPokemon() (model.Pokemon, error) {
+func (pu *PokemonUsecase) GetAllPokemon() ([]model.Pokemon, error) {
   pokemon, err := pu.service.GetAllPokemon()
   if err != nil {
     return nil, fmt.Errorf("getting all pokemon from usecase: %v", err)
@@ -28,7 +31,7 @@ func (pu *PokemonUsecase) GetAllPokemon() (model.Pokemon, error) {
 }
 
 func (pu *PokemonUsecase) GetPokemonById(id int) (*model.Pokemon, error) {
-  pokemon, error := pu.service.GetPokemonById(id)
+  pokemon, err := pu.service.GetPokemonById(id)
   if err != nil {
     return nil, fmt.Errorf("getting all pokemon from usecase: %v", err)
   }
