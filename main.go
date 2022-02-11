@@ -11,7 +11,7 @@ import(
 )
 
 func main() {
-  pokemonService := service.New(nil)
+  pokemonService := service.New()
   pokemonUsecase := usecase.New(pokemonService)
   pokemonController := controller.New(pokemonUsecase)
   httpRouter := router.Setup(pokemonController)
@@ -19,16 +19,4 @@ func main() {
   http.ListenAndServe(":8080", httpRouter)
 
   log.Printf("starting server on port :8080")
-
-  f, err := os.Open("pokemon.csv")
-  if err != nil {
-    log.Fatal("Unable to read input file", err)
-  }
-  defer f.Close()
-
-  csvReader := csv.NewReader(f)
-  records, err := csvReader.ReadAll()
-  if err != nil {
-    log.Fatal("Unable to parse file as CSV", err)
-  }
 }

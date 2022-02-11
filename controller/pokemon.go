@@ -15,7 +15,7 @@ import (
 
 type usecase interface {
   GetAllPokemon() ([]model.Pokemon, error)
-  GetPokemonById(id int) (*model.Pokemon, error)
+  GetPokemonById(id int) (model.Pokemon, error)
 }
 
 type pokemonController struct {
@@ -72,7 +72,7 @@ func (pc *pokemonController) GetPokemonById(w http.ResponseWriter, r *http.Reque
     fmt.Fprint(w, "pokemon not found")
   }
 
-  if pokemon == nil {
+  if (pokemon == model.Pokemon{}) {
     log.Println("no pokemon found")
     w.WriteHeader(http.StatusNotFound)
   }

@@ -10,7 +10,16 @@ import (
   "github.com/peregrinebalas/go-dispatch-bootcamp/model"
 )
 
-func GetAllPokemon() ([]model.Pokemon, error) {
+type PokemonService struct {
+}
+
+func New() *PokemonService {
+  return &PokemonService{
+
+  }
+}
+
+func (ps PokemonService) GetAllPokemon() ([]model.Pokemon, error) {
   pokedex, err := Pokedex()
   if err != nil {
     log.Fatal("could not fetch pokemon", err)
@@ -19,7 +28,7 @@ func GetAllPokemon() ([]model.Pokemon, error) {
   return pokedex, nil
 }
 
-func GetPokemonById(id int) (model.Pokemon, error) {
+func (ps PokemonService) GetPokemonById(id int) (model.Pokemon, error) {
   pokedex, err := Pokedex()
   if err != nil {
     log.Fatal("could not fetch pokemon", err)
@@ -32,7 +41,7 @@ func GetPokemonById(id int) (model.Pokemon, error) {
         }
   }
 
-  if pokemon == nil {
+  if (pokemon == model.Pokemon{}) {
     log.Fatal("could not find pokemon with id: %v", id)
   }
 
